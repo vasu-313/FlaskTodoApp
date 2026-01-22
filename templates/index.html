@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>TODO App</title>
+    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+</head>
+<body>
+
+<!-- FLASH MESSAGES -->
+<div class="flash-container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">
+            <span>{{ message }}</span>
+            <span class="close-btn" onclick="closeFlash(this)">×</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+</div>
+
+
+<h2>{{ 'Edit Task' if edit_todo else 'Add Task' }}</h2>
+
+<form method="POST">
+    {% if edit_todo %}
+        <input type="hidden" name="id" value="{{ edit_todo.Id }}">
+    {% endif %}
+
+    <input type="text" name="task"
+           value="{{ edit_todo.Task if edit_todo else '' }}"
+           placeholder="Enter task" required>
+
+    <button type="submit">
+        {{ 'Update' if edit_todo else 'Add' }}
+    </button>
+</form>
+
+<hr>
+
+<ul>
+    {% for todo in todos %}
+        <li>
+            {{ todo.Task }}
+            <a href="/?edit_id={{ todo.Id }}">Edit</a>
+            <a href="/delete/{{ todo.Id }}">Delete</a>
+        </li>
+    {% endfor %}
+</ul>
+
+
+<a href="/logout">logout</a>
+<p>{{email}}</p>
+
+<script src="{{ url_for('static', filename='index.js') }}"></script>
+</body>
+</html>

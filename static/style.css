@@ -1,0 +1,41 @@
+.flash-container {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;      /* important */
+    display: flex;
+    justify-content: center;
+    pointer-events: none; 
+}
+
+
+.flash {
+    pointer-events: auto;
+    min-width: 280px;
+    max-width: 420px;
+    padding: 12px 18px;
+    border-radius: 6px;
+    font-weight: 500;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
+
+.flash.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.flash.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.close-btn {
+    position: absolute;
+    right: 10px;
+    top: 6px;
+    cursor: pointer;
+    font-size: 18px;
+}
