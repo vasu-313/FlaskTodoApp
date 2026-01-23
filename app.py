@@ -2,6 +2,7 @@ from flask import Flask, session, render_template, request, redirect, url_for, f
 import pyodbc
 from forms import SignupForm, LoginForm
 import bcrypt
+from datetime import datetime
 
 
 app = Flask(__name__)
@@ -17,9 +18,19 @@ conn_str = (
 def get_connection():
     return pyodbc.connect(conn_str)
 
+#the footer year updates automatically
+@app.context_processor
+def inject_year():
+    return {"current_year": datetime.now().year}
+
+
 
 @app.route("/signup", methods=["GET", "POST"])
 def signup():
+
+    if "email" in session:
+        return redirect(url_for("index"))
+
     form = SignupForm()
     conn = get_connection()
     cursor = conn.cursor()
@@ -94,6 +105,10 @@ def signup():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+
+    if "email" in session:
+        return redirect(url_for("index"))
+
     form = LoginForm()
     conn = get_connection()
     cursor = conn.cursor()
@@ -170,6 +185,14 @@ def login():
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+    if "email" not in session:
+        flash("Please login first", "error")
+        return redirect(url_for("login"))
+    else:
+        flash("user can not access login page without logout", "error")
+    
+    email = session.get("email")
+
     conn = get_connection()
     cursor = conn.cursor()
     edit_todo = None
@@ -218,7 +241,7 @@ def index():
         "index.html",
         todos=todos,
         edit_todo=edit_todo,
-        email=session.get("email")
+        email=email
     )
 
 

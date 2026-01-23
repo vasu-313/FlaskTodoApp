@@ -1,23 +1,11 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Signup</title>
-    <style>
-        .error { color: red; }
-        .success { color: green; }
-        input { display: block; margin-bottom: 10px; }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block title %}Login{% endblock %}
+
+{% block content %}
 
 <h2>Signup</h2>
 
-<!-- FLASH MESSAGES -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% for category, message in messages %}
-    <p class="{{ category }}">{{ message }}</p>
-  {% endfor %}
-{% endwith %}
 
 <form method="POST">
     {{ form.hidden_tag() }}
@@ -49,5 +37,4 @@
     {{ form.submit() }}
 </form>
 
-</body>
-</html>
+{% endblock %}

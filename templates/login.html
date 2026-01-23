@@ -1,41 +1,23 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Login</title>
-    <style>
-        .error { color: red; }
-        .success { color: green; }
-        input { display: block; margin-bottom: 10px; }
-    </style>
-</head>
-<body>
+{% extends "base.html" %}
 
+{% block title %}Login{% endblock %}
+
+{% block content %}
 <h2>Login</h2>
-
-<!-- FLASH MESSAGES -->
-{% with messages = get_flashed_messages(with_categories=true) %}
-  {% for category, message in messages %}
-    <p class="{{ category }}">{{ message }}</p>
-  {% endfor %}
-{% endwith %}
 
 <form method="POST">
     {{ form.hidden_tag() }}
 
-    {{ form.email.label }}
-    {{ form.email() }}
-    {% for error in form.email.errors %}
-        <span class="error">{{ error }}</span>
-    {% endfor %}
+    <div>
+        {{ form.email.label }}
+        {{ form.email }}
+    </div>
 
-    {{ form.password.label }}
-    {{ form.password() }}
-    {% for error in form.password.errors %}
-        <span class="error">{{ error }}</span>
-    {% endfor %}
+    <div>
+        {{ form.password.label }}
+        {{ form.password }}
+    </div>
 
-    {{ form.submit() }}
+    <button type="submit">Login</button>
 </form>
-
-</body>
-</html>
+{% endblock %}

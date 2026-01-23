@@ -1,24 +1,10 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>TODO App</title>
-    <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
-</head>
-<body>
+{% extends "base.html" %}
 
-<!-- FLASH MESSAGES -->
-<div class="flash-container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="flash {{ category }}">
-            <span>{{ message }}</span>
-            <span class="close-btn" onclick="closeFlash(this)">×</span>
-          </div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
-</div>
+{% block title %}Login{% endblock %}
+
+{% block content %}
+
+
 
 
 <h2>{{ 'Edit Task' if edit_todo else 'Add Task' }}</h2>
@@ -28,11 +14,11 @@
         <input type="hidden" name="id" value="{{ edit_todo.Id }}">
     {% endif %}
 
-    <input type="text" name="task"
+    <input type="text" name="task" class="form-control"
            value="{{ edit_todo.Task if edit_todo else '' }}"
            placeholder="Enter task" required>
 
-    <button type="submit">
+    <button type="submit" class="btn btn-primary" >
         {{ 'Update' if edit_todo else 'Add' }}
     </button>
 </form>
@@ -53,6 +39,4 @@
 <a href="/logout">logout</a>
 <p>{{email}}</p>
 
-<script src="{{ url_for('static', filename='index.js') }}"></script>
-</body>
-</html>
+{% endblock %}
