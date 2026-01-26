@@ -3,6 +3,7 @@ import pyodbc
 from forms import SignupForm, LoginForm
 import bcrypt
 from datetime import datetime
+from functools import wraps
 
 
 app = Flask(__name__)
@@ -18,6 +19,8 @@ conn_str = (
 def get_connection():
     return pyodbc.connect(conn_str)
 
+
+
 #the footer year updates automatically
 @app.context_processor
 def inject_year():
@@ -25,11 +28,34 @@ def inject_year():
 
 
 
+
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "email" not in session:
+            flash("Please login first", "error")
+            return redirect(url_for("login"))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
+
+def logout_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if "email" in session:
+            flash("Please logout first", "error")
+            return redirect(url_for("index"))
+        return f(*args, **kwargs)
+    return decorated_function
+
+
 @app.route("/signup", methods=["GET", "POST"])
+@logout_required
 def signup():
 
-    if "email" in session:
-        return redirect(url_for("index"))
+    # if "email" in session:
+    #     return redirect(url_for("index"))
 
     form = SignupForm()
     conn = get_connection()
@@ -104,10 +130,11 @@ def signup():
 
 
 @app.route("/login", methods=["GET", "POST"])
+@logout_required
 def login():
 
-    if "email" in session:
-        return redirect(url_for("index"))
+    # if "email" in session:
+    #     return redirect(url_for("index"))
 
     form = LoginForm()
     conn = get_connection()
@@ -184,12 +211,13 @@ def login():
 
 
 @app.route('/', methods=['GET', 'POST'])
+@login_required
 def index():
-    if "email" not in session:
-        flash("Please login first", "error")
-        return redirect(url_for("login"))
-    else:
-        flash("user can not access login page without logout", "error")
+    # if "email" not in session:
+    #     flash("Please login first", "error")
+    #     return redirect(url_for("login"))
+    # else:
+    #     flash("user can not access login page without logout", "error")
     
     email = session.get("email")
 
@@ -276,3 +304,8 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
+
+
+
