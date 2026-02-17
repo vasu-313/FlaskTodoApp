@@ -73,8 +73,9 @@ def signup():
         ).fetchone()
 
         if existing_user:
-            flash("Email already exists!", "error")
-            return redirect(url_for("signup"))
+            # flash("Email already exists!", "error")
+            form.email.errors.append("Email already exists!")
+            return render_template("signup.html", form=form)
         
          # HASH PASSWORD
         hashed_pw = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
@@ -151,9 +152,10 @@ def login():
         ).fetchone()
 
         if not user:
-            flash("Email not registered", "error")
-            return redirect(url_for("login"))
-
+            # flash("Email not registered", "error")
+            form.email.errors.append("Email not registered")
+            return render_template("login.html", form=form)
+        
         stored_hashed_pw = user.Password  # from DB
 
         # Convert string → bytes
@@ -166,8 +168,9 @@ def login():
             flash("Login successful", "success")
             return redirect(url_for("index"))
         else:
-            flash("Incorrect password", "error")
-            return redirect(url_for("login"))
+            #flash("Incorrect password", "error")
+            form.password.errors.append("Incorrect password")
+            return render_template("login.html", form=form)
 
     return render_template("login.html", form=form)
 
@@ -304,6 +307,8 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=True)
+
+
 
 
 

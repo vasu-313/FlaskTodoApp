@@ -1,40 +1,73 @@
 {% extends "base.html" %}
 
-{% block title %}Login{% endblock %}
+{% block title %}Signup{% endblock %}
 
 {% block content %}
 
-<h2>Signup</h2>
+<div class="container mt-5" style="max-width: 500px;">
+    <h2 class="text-center mb-4">Signup</h2>
 
+    <form method="POST" novalidate>
+        {{ form.hidden_tag() }}
 
-<form method="POST">
-    {{ form.hidden_tag() }}
+        <!-- NAME -->
+        <div class="mb-3">
+            {{ form.name.label(class="form-label") }}
 
-    {{ form.name.label }}
-    {{ form.name() }}
-    {% for error in form.name.errors %}
-        <span class="error">{{ error }}</span>
-    {% endfor %}
+            {{ form.name(class="form-control " + ("is-invalid" if form.name.errors else "")) }}
 
-    {{ form.email.label }}
-    {{ form.email() }}
-    {% for error in form.email.errors %}
-        <span class="error">{{ error }}</span>
-    {% endfor %}
+            {% for error in form.name.errors %}
+                <span class="text-danger small d-block">
+                    {{ error }}
+                </span>
+            {% endfor %}
+        </div>
 
-    {{ form.password.label }}
-    {{ form.password() }}
-    {% for error in form.password.errors %}
-        <span class="error">{{ error }}</span>
-    {% endfor %}
+        <!-- EMAIL -->
+        <div class="mb-3">
+            {{ form.email.label(class="form-label") }}
 
-    {{ form.confirm_password.label }}
-    {{ form.confirm_password() }}
-    {% for error in form.confirm_password.errors %}
-        <span class="error">{{ error }}</span>
-    {% endfor %}
+            {{ form.email(class="form-control " + ("is-invalid" if form.email.errors else "")) }}
 
-    {{ form.submit() }}
-</form>
+            {% for error in form.email.errors %}
+                <span class="text-danger small d-block">
+                    {{ error }}
+                </span>
+            {% endfor %}
+        </div>
+
+        <!-- PASSWORD -->
+        <div class="mb-3">
+            {{ form.password.label(class="form-label") }}
+
+            {{ form.password(class="form-control " + ("is-invalid" if form.password.errors else "")) }}
+
+            {% for error in form.password.errors %}
+                <span class="text-danger small d-block">
+                    {{ error }}
+                </span>
+            {% endfor %}
+        </div>
+
+        <!-- CONFIRM PASSWORD -->
+        <div class="mb-3">
+            {{ form.confirm_password.label(class="form-label") }}
+
+            {{ form.confirm_password(class="form-control " + ("is-invalid" if form.confirm_password.errors else "")) }}
+
+            {% for error in form.confirm_password.errors %}
+                <span class="text-danger small d-block">
+                    {{ error }}
+                </span>
+            {% endfor %}
+        </div>
+
+        <!-- SUBMIT BUTTON -->
+        <div class="d-grid">
+            {{ form.submit(class="btn btn-primary") }}
+        </div>
+
+    </form>
+</div>
 
 {% endblock %}
