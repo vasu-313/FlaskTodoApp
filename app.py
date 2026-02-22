@@ -1,6 +1,6 @@
-from flask import Flask, session, render_template, request, redirect, url_for, flash
+from flask import Flask, session, render_template, request, redirect, url_for, flash, jsonify
 import pyodbc
-from forms import SignupForm, LoginForm
+from forms import SignupForm, LoginForm, TimesheetForm
 import bcrypt
 from datetime import datetime
 from functools import wraps
@@ -11,7 +11,7 @@ app.secret_key = "my_secret_key"
 
 conn_str = (
     "Driver={ODBC Driver 17 for SQL Server};"
-    "Server=VASU\SQLEXPRESS;"
+    "Server=VASU\\SQLEXPRESS;"
     "Database=vasudb;"
     "Trusted_Connection=yes;"
 )
@@ -305,8 +305,84 @@ def logout():
 
 
 
+
+
+@app.route("/form", methods=["GET", "POST"])
+def form():
+
+    form = TimesheetForm()
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT project_id, project_name FROM tsprojects")
+    projects = cursor.fetchall()
+
+    # form.project.choices = [(row.project_id, row.project_name) for row in projects]
+    # form.task.choices = []
+    # form.activity.choices = []
+
+    form.project.choices = [(0, "--select--")] + [
+    (row.project_id, row.project_name) for row in projects
+    ]
+    form.task.choices = [(0, "--select--")]
+    form.activity.choices = [(0, "--select--")]
+
+    conn.close()
+
+    return render_template("addTime.html", form=form)
+
+
+
+@app.route("/get_tasks/<int:project_id>")
+def get_tasks(project_id):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute("SELECT task_id, task_name FROM tsproject_tasks WHERE project_id = ?", project_id)
+    tasks = cursor.fetchall()
+
+    result = []
+    for row in tasks:
+        result.append({
+            "id": row.task_id,
+            "name": row.task_name
+        })
+
+    conn.close()
+
+    return jsonify(result)
+
+
+@app.route("/get_activities/<int:task_id>")
+def get_activities(task_id):
+
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    cursor.execute(
+        "SELECT activity_id, activity_name FROM tstask_activities WHERE task_id = ?",
+        (task_id,)
+    )
+
+    activities = cursor.fetchall()
+
+    result = []
+    for row in activities:
+        result.append({
+            "id": row[0],
+            "name": row[1]
+        })
+
+    conn.close()
+    return jsonify(result)
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
+
 
 
 

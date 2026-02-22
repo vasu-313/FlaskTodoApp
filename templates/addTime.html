@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}timesheetForm{% endblock %}
+
+{% block content %}
+
+<form method="POST">
+    {{ form.hidden_tag() }}
+
+    {{ form.date.label }}
+    {{ form.date() }}
+
+    {{ form.project.label }}
+    {{ form.project(id="project") }}
+
+    {{ form.taskType.label }}
+    {{ form.taskType() }}
+
+    {{ form.task.label }}
+    {{ form.task(id="task") }}
+
+    {{ form.activity.label }}
+    {{ form.activity(id="activity") }}
+
+    {{ form.time.label }}
+    {{ form.time() }}
+
+    {{ form.overtime.label }}
+    {{ form.overtime() }}
+
+    {{ form.holiday.label }}
+    {{ form.holiday() }}
+
+    {{ form.description.label }}
+    {{ form.description() }}
+
+    {{ form.submit() }}
+</form>
+
+{% endblock %}

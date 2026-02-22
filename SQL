@@ -10,3 +10,53 @@ CREATE TABLE FlaskTodoUsers (
 	Email VARCHAR(150) UNIQUE NOT NULL,
 	Password VARCHAR(200) NOT NULL
 );
+
+
+
+CREATE TABLE tsusers (
+    user_id INT IDENTITY(1,1) PRIMARY KEY,
+    email NVARCHAR(100) NOT NULL UNIQUE,
+    password NVARCHAR(200) NOT NULL,
+    role NVARCHAR(50) NOT NULL, -- admin or employee
+    created_at DATETIME DEFAULT GETDATE(),
+    is_active BIT DEFAULT 1
+);
+
+CREATE TABLE tsprojects (
+    project_id INT IDENTITY(1,1) PRIMARY KEY,
+    project_code NVARCHAR(200) NOT NULL,
+    created_at DATETIME DEFAULT GETDATE(),
+    is_active BIT DEFAULT 1
+);
+
+CREATE TABLE tsuser_projects (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    user_id INT NOT NULL,
+    project_id INT NOT NULL,
+    assigned_at DATETIME DEFAULT GETDATE(),
+
+    FOREIGN KEY (user_id) REFERENCES tsusers(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (project_id) REFERENCES tsprojects(project_id) ON DELETE CASCADE,
+
+    CONSTRAINT UQ_user_project UNIQUE (user_id, project_id)
+);
+
+CREATE TABLE tsproject_tasks (
+    task_id INT IDENTITY(1,1) PRIMARY KEY,
+    task_name NVARCHAR(200) NOT NULL,
+    project_id INT NOT NULL,
+    created_at DATETIME DEFAULT GETDATE(),
+    is_active BIT DEFAULT 1,
+
+    FOREIGN KEY (project_id) REFERENCES tsprojects(project_id) ON DELETE CASCADE
+);
+
+CREATE TABLE tstask_activities (
+    activity_id INT IDENTITY(1,1) PRIMARY KEY,
+    activity_name NVARCHAR(200) NOT NULL,
+    task_id INT NOT NULL,
+    created_at DATETIME DEFAULT GETDATE(),
+    is_active BIT DEFAULT 1,
+
+    FOREIGN KEY (task_id) REFERENCES tsproject_tasks(task_id) ON DELETE CASCADE
+);
